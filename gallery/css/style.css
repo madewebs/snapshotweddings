@@ -9,18 +9,21 @@
 /* Template default CSS
 /*----------------------------------------*/
 
-@import url("https://fonts.googleapis.com/css?family=Montserrat:400,400i,500,500i,600,600i,700,700i&display=swap");
 
+html {
+	scroll-behavior: smooth;
+}
 
 html,
 body {
 	height: 100%;
-	font-family: "Montserrat", sans-serif;
+	font-family: "Poppins", sans-serif;
 	-webkit-font-smoothing: antialiased;
 }
 
 body {
 	padding-left: 90px;
+	color: #333;
 }
 
 @media (max-width: 420px) {
@@ -36,20 +39,23 @@ h4,
 h5,
 h6 {
 	margin: 0;
-	color: #252525;
-	font-weight: 600;
+	color: #111111;
+	font-family: "Playfair Display", serif;
+	font-weight: 700;
 }
 
 h1 {
 	font-size: 70px;
+	letter-spacing: -2px;
 }
 
 h2 {
-	font-size: 36px;
+	font-size: 48px;
+	letter-spacing: -1px;
 }
 
 h3 {
-	font-size: 30px;
+	font-size: 32px;
 }
 
 h4 {
@@ -57,7 +63,7 @@ h4 {
 }
 
 h5 {
-	font-size: 18px;
+	font-size: 20px;
 }
 
 h6 {
@@ -65,8 +71,8 @@ h6 {
 }
 
 p {
-	font-size: 15px;
-	color: #636363;
+	font-size: 16px;
+	color: #666;
 	line-height: 1.8;
 }
 
