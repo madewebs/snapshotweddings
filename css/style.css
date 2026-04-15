@@ -38,6 +38,7 @@
 html {
     font-size: 62.5%; /* 10px */
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 body {
@@ -354,6 +355,7 @@ img { max-width: 100%; height: auto; display: block; }
 .gallery__filters {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     gap: 2.4rem;
     margin-bottom: 4.8rem;
 }
@@ -378,7 +380,7 @@ img { max-width: 100%; height: auto; display: block; }
 
 .gallery__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(28rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 28rem), 1fr));
     gap: 1.6rem;
     transition: opacity 0.4s ease;
 }
@@ -756,8 +758,18 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 @media (max-width: 37em) { /* 592px */
+    .container { padding: 0 1.6rem; }
     .hero__title { font-size: 4.2rem; }
     .hero__subtitle { font-size: 1.4rem; letter-spacing: 2px; }
     .section { padding: 8rem 0; }
     .heading-secondary { font-size: 3.2rem; }
+    .gallery__filters {
+        justify-content: flex-start;
+        gap: 1rem 1.6rem;
+        margin-bottom: 3.2rem;
+    }
+
+    .gallery__filter-btn {
+        font-size: 1.4rem;
+    }
 }
