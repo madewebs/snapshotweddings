@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('.navbar__link');
     const navToggle = document.querySelector('.navbar__toggle');
     const navMenu = document.querySelector('.navbar__menu');
+    const navOverlay = document.querySelector('.nav-overlay');
+    const navClose = document.querySelector('.navbar__close');
     const galleryGrid = document.getElementById('gallery-grid');
     const filterBtns = document.querySelectorAll('.gallery__filter-btn');
     
@@ -22,19 +24,29 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentGallerySet = [...galleryData];
 
     /* --- MOBILE MENU --- */
-    if (navToggle) {
-        navToggle.addEventListener('click', () => {
-            navToggle.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-    }
+    const toggleMenu = () => {
+        navToggle?.classList.toggle('active');
+        navMenu?.classList.toggle('active');
+        navOverlay?.classList.toggle('active');
+        
+        // Prevent body scroll when menu is open
+        document.body.style.overflow = navMenu?.classList.contains('active') ? 'hidden' : '';
+    };
+
+    const closeMenu = () => {
+        navToggle?.classList.remove('active');
+        navMenu?.classList.remove('active');
+        navOverlay?.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    navToggle?.addEventListener('click', toggleMenu);
+    navClose?.addEventListener('click', closeMenu);
+    navOverlay?.addEventListener('click', closeMenu);
 
     // Close mobile menu on link click
     navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            if (navToggle) navToggle.classList.remove('active');
-            if (navMenu) navMenu.classList.remove('active');
-        });
+        link.addEventListener('click', closeMenu);
     });
 
     /* --- SMOTH SCROLL & NAVIGATION --- */
@@ -44,13 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             navbar.classList.remove('navbar--scrolled');
         }
-    });
-
-    // Close mobile menu on link click (if implemented)
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            // Optional: Handle mobile nav toggle here
-        });
     });
 
     /* --- GALLERY ENGINE --- */

@@ -32,16 +32,16 @@
 *, *::before, *::after {
     margin: 0;
     padding: 0;
-    box-sizing: inherit;
+    box-sizing: border-box;
 }
 
 html {
     font-size: 62.5%; /* 10px */
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 body {
-    box-sizing: border-box;
     font-family: var(--font-body);
     font-weight: 400;
     line-height: 1.7;
@@ -160,7 +160,7 @@ img { max-width: 100%; height: auto; display: block; }
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000;
+    z-index: 5000; /* Ensure navbar is above everything including overlay */
     padding: 2.4rem 4.8rem;
     background: transparent;
     transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -223,13 +223,15 @@ img { max-width: 100%; height: auto; display: block; }
 
 .navbar__link:hover::after { width: 100%; }
 
+.navbar__close { display: none; }
+
 .navbar__toggle { 
     display: none; 
     border: none;
     background: transparent;
     cursor: pointer;
     padding: 1rem;
-    z-index: 1100;
+    z-index: 5000; /* Ensure this is the absolute top */
 }
 
 .navbar__toggle-icon {
@@ -260,6 +262,10 @@ img { max-width: 100%; height: auto; display: block; }
 .navbar__toggle-icon::after { top: 8px; }
 
 .navbar__toggle.active .navbar__toggle-icon { background-color: transparent; }
+.navbar__toggle.active .navbar__toggle-icon::before,
+.navbar__toggle.active .navbar__toggle-icon::after {
+    background-color: var(--color-primary) !important;
+}
 .navbar__toggle.active .navbar__toggle-icon::before { transform: rotate(45deg); top: 0; }
 .navbar__toggle.active .navbar__toggle-icon::after { transform: rotate(-45deg); top: 0; }
 
@@ -356,6 +362,7 @@ img { max-width: 100%; height: auto; display: block; }
     justify-content: center;
     gap: 2.4rem;
     margin-bottom: 4.8rem;
+    flex-wrap: wrap;
 }
 
 .gallery__filter-btn {
@@ -389,6 +396,21 @@ img { max-width: 100%; height: auto; display: block; }
     overflow: hidden;
     aspect-ratio: 1/1;
     cursor: pointer;
+}
+
+/* Fallback for browsers that don't support aspect-ratio */
+@supports not (aspect-ratio: 1/1) {
+    .gallery__item {
+        height: 0;
+        padding-top: 100%;
+    }
+    .gallery__item img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
 }
 
 .gallery__item img {
@@ -597,7 +619,7 @@ img { max-width: 100%; height: auto; display: block; }
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.95);
-    z-index: 2000;
+    z-index: 10000; /* Higher than navbar (5000) to avoid overlap */
     opacity: 0;
     visibility: hidden;
     transition: all 0.4s;
@@ -715,23 +737,62 @@ img { max-width: 100%; height: auto; display: block; }
         position: fixed;
         top: 0;
         right: -100%;
-        width: 80%;
+        width: 30rem;
+        max-width: 85%;
         height: 100vh;
-        background: var(--color-white);
+        background: #ffffff; /* Explicit sharp white */
         display: flex;
-        justify-content: center;
-        align-items: center;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
         transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-        box-shadow: -10px 0 30px rgba(0,0,0,0.1);
-        z-index: 1000;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+        padding: 10rem 4rem;
     }
 
     .navbar__menu.active { right: 0; }
 
+    /* Hide the extra close button - we will use the transforming toggle only */
+    .navbar__close {
+        display: none !important;
+    }
+
+    .nav-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0,0,0,0.1); /* Very light dark tint */
+        backdrop-filter: blur(8px);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s;
+        z-index: 4000; /* Behind navbar (5000) but above content */
+    }
+
+    .nav-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
     .navbar__list {
         flex-direction: column;
-        align-items: center;
-        gap: 4rem;
+        align-items: flex-start;
+        gap: 3rem;
+        width: 100%;
+    }
+
+    .navbar__link {
+        color: var(--color-primary);
+        font-size: 2.4rem;
+        font-family: var(--font-heading); /* Playfair Display for classier look */
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+
+    .navbar__link::after {
+        display: none; /* Cleaner on mobile */
     }
 
     .navbar__link {
@@ -756,8 +817,30 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 @media (max-width: 37em) { /* 592px */
-    .hero__title { font-size: 4.2rem; }
+    .container { padding: 0 1.6rem; }
+    .navbar, .navbar--scrolled { padding: 1.6rem 2.4rem; }
+
+    .hero__title { font-size: 3.8rem; }
     .hero__subtitle { font-size: 1.4rem; letter-spacing: 2px; }
-    .section { padding: 8rem 0; }
+    .hero__cta { flex-direction: column; gap: 1.6rem; }
+    .btn { width: 100%; text-align: center; }
+
+    .section { padding: 6rem 0; }
     .heading-secondary { font-size: 3.2rem; }
+
+    .gallery__grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+    }
+
+    .gallery__overlay { padding: 1.6rem; }
+    .gallery__title { font-size: 1.4rem; }
+    .gallery__category { font-size: 1rem; }
+    
+    .about__img { width: 100%; height: 30rem; object-fit: cover; }
+
+    .modal__container { padding: 2rem; }
+    .modal__close { top: 1rem; right: 1rem; width: 4.4rem; height: 4.4rem; font-size: 3rem; }
+    .modal__nav { width: 4.4rem; height: 4.4rem; font-size: 20px; }
+    .modal__controls { padding: 0 1rem; }
 }
